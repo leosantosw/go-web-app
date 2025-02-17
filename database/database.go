@@ -24,7 +24,6 @@ func Connection() *sql.DB {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Database connection established successfully")
 
 	return db
 }
