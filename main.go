@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"text/template"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -18,10 +19,12 @@ const (
 )
 
 type Product struct {
+	Id          int
 	Name        string
 	Description string
 	Price       float64
 	Quantity    int
+	CreatedAt   time.Time
 }
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
@@ -33,40 +36,39 @@ func main() {
 
 func databaseConn() *sql.DB {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disabled",
+		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("Database connection established successfully")
 
 	return db
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
 	db := databaseConn()
-	db.Close()
+	defer db.Close()
 
-	products := []Product{
-		{
-			Name:        "Camisa GO",
-			Description: "Camisa estilosa e confortável, perfeita para desenvolvedores.",
-			Quantity:    10,
-			Price:       100.00,
-		},
-		{
-			Name:        "Caneca GO",
-			Description: "Caneca de cerâmica com o logo da linguagem Go.",
-			Quantity:    20,
-			Price:       25.00,
-		},
-		{
-			Name:        "Livro 'A Linguagem de Programação Go'",
-			Description: "Livro oficial para aprender Go.",
-			Quantity:    30,
-			Price:       80.00,
-		},
+	var products []Product
+
+	result, err := db.Query("SELECT * FROM products")
+	if err != nil {
+		panic(err.Error())
 	}
+
+	for result.Next() {
+		product := Product{}
+		err := result.Scan(&product.Id, &product.Name, &product.Description, &product.Price, &product.Quantity, &product.CreatedAt)
+		if err != nil {
+			panic(err.Error())
+		}
+		products = append(products, product)
+	}
+
+	fmt.Println(products)
+
 	templates.ExecuteTemplate(w, "Index", products)
 }
