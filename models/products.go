@@ -20,7 +20,7 @@ func ListProducts() []Product {
 
 	var products []Product
 
-	result, err := db.Query("SELECT * FROM products")
+	result, err := db.Query("SELECT * FROM products order by id desc")
 	if err != nil {
 		panic(err.Error())
 	}
