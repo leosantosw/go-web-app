@@ -29,6 +29,7 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Descrição</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Preço</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Quantidade</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Ações</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -38,6 +39,10 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ .Description }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ .Price }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ .Quantity }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button onclick="" class="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Editar</button>
+                                <button onclick="onDeleteProduct('{{ .Id }}')" class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition">Deletar</button>
+                            </td>
                         </tr>
                         {{ end }}
                     </tbody>
@@ -46,5 +51,19 @@
         </section>
     </div>
 </body>
+<script>
+    function onDeleteProduct(id) {
+        if(confirm("Tem certeza que deseja deletar esse produto?")) {
+            console.log('Deletando')
+            fetch(`/remove/${id}`, {
+                method: "DELETE", 
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error("Error: ${response.status}")
+                }
+            }).then(() => window.location = "/")
+        }
+    }
+</script>
 </html>
 {{ end }}

@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"text/template"
 
 	"web-app/models"
@@ -28,7 +28,6 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 		description := r.FormValue("description")
 		price := r.FormValue("price")
 		quantity := r.FormValue("quantity")
-		fmt.Println(productName, description, price, quantity)
 		formattedPrice, err := strconv.ParseFloat(price, 64)
 		if err != nil {
 			log.Println("Price parameter is invalid")
@@ -40,5 +39,14 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 		}
 		models.CreateNewProduct(productName, description, formattedPrice, formattedQuantity)
 	}
-	// http.Redirect(w, r, "/", 301)
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+}
+
+func Remove(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "DELETE" {
+		path := strings.TrimPrefix(r.URL.Path, "/remove/")
+		id := strings.Split(path, "/")[0]
+		models.RemoveProduct(id)
+	}
+	http.Redirect(w, r, "/", http.StatusNoContent)
 }
