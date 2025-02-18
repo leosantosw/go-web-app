@@ -1,15 +1,16 @@
-{{ define "New" }}
+{{ define "Edit" }}
 {{ template "_head" }}
 <body class="bg-gray-50">
     {{ template "_menu" }}
 
     <div class="container mx-auto px-4 py-8">
         <section class="bg-white shadow-xl rounded-lg overflow-hidden p-6 max-w-2xl mx-auto">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Cadastrar Novo Produto</h2>
-            <form action="/new" method="POST" class="space-y-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Editar Produto</h2>
+            <form action="/edit/{{ .Id }}" method="POST" class="space-y-6">
+                <input name="id" type="hidden" value="{{ .Id }}">
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700">Nome</label>
-                    <input type="text" id="name" name="name" required
+                    <input type="text" id="name" name="name" value="{{ .Name }}" required
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Digite o nome do produto">
                 </div>
@@ -18,19 +19,19 @@
                     <label for="description" class="block text-sm font-medium text-gray-700">Descrição</label>
                     <textarea id="description" name="description" rows="3" required
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Digite a descrição do produto"></textarea>
+                        placeholder="Digite a descrição do produto">{{ .Description }}</textarea>
                 </div>
 
                 <div>
                     <label for="price" class="block text-sm font-medium text-gray-700">Preço</label>
-                    <input type="number" id="price" name="price" step="0.01" required
+                    <input type="number" id="price" name="price" value="{{ .Price }}" step="0.01" required
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Digite o preço do produto">
                 </div>
 
                 <div>
                     <label for="quantity" class="block text-sm font-medium text-gray-700">Quantidade</label>
-                    <input type="number" id="quantity" name="quantity" required
+                    <input type="number" id="quantity" name="quantity" value="{{ .Quantity }}" required
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Digite a quantidade em estoque">
                 </div>
@@ -38,7 +39,7 @@
                 <div>
                     <button type="submit"
                         class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300">
-                        Cadastrar Produto
+                        Atualizar Produto
                     </button>
                 </div>
             </form>
