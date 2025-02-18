@@ -37,3 +37,15 @@ func ListProducts() []Product {
 	defer db.Close()
 	return products
 }
+
+func CreateNewProduct(name, description string, price float64, quantity int) {
+	db := database.Connection()
+
+	productQuery, err := db.Prepare("INSERT INTO PRODUCTS (name, description, price, quantity) VALUES ($1, $2, $3, $4)")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	productQuery.Exec(name, description, price, quantity)
+	defer db.Close()
+}
